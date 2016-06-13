@@ -8,17 +8,3 @@ gulp.task('default', function(){
 		script: 'app.js'
 	});
 });
-
-gulp.task('watch', function(){
-	gulp.watch('./static/**', ['stylus']);
-});
-
-gulp.task('stylus', function () {
-  gulp.src('./static/style.styl')
-    .pipe(
-		stylus({
-			url: { name: 'url', limit: false }
-		})
-	)
-    .pipe(gulp.dest('./static/css/'));
-});
