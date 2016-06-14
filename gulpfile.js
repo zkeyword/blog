@@ -1,7 +1,6 @@
-var gulp          = require('gulp'),
-	nodemon       = require('gulp-nodemon')
+var gulp    = require('gulp'),
+	nodemon = require('gulp-nodemon')
 	
-var stylus = require('gulp-stylus');
 	
 gulp.task('default', function(){
 	nodemon({

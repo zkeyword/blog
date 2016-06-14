@@ -11,8 +11,8 @@ let session      = require('express-session')
 let bodyParser   = require('body-parser');
 
 var fs = require('fs');
-var accessLog = fs.createWriteStream('access.log', {flags: 'a'});
-var errorLog = fs.createWriteStream('error.log', {flags: 'a'});
+var accessLog = fs.createWriteStream('log/access.log', {flags: 'a'});
+var errorLog = fs.createWriteStream('log/error.log', {flags: 'a'});
 
 
 // 设定view engine变量，意为网页模板引擎
@@ -31,14 +31,14 @@ app.use(session({
         maxAge:1000*60*30
     }
 }));
+
+app.use(logger('dev'));
+app.use(logger({stream: accessLog}));
 app.use(function (err, req, res, next) {
   var meta = '[' + new Date() + '] ' + req.url + '\n';
   errorLog.write(meta + err.stack + '\n');
   next();
 });
-
-app.use(logger('dev'));
-app.use(logger({stream: accessLog}));
 
 
 // 设定静态文件目录，比如本地文件
