@@ -43,6 +43,16 @@ app.use(function (err, req, res, next) {
 
 // 设定静态文件目录，比如本地文件
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(favicon(__dirname + '/public/favicon.ico'));
+
+app.use(function(err, req, res, next) {
+  console.error(1212);
+  res.status(500).send('500');
+  next();
+});
+
 
 app.use(router);
-app.listen(3000);
+app.listen(3000, function(){
+	console.log('stared locathost://3000');  
+});
