@@ -3,4 +3,5 @@
 *.js.map
 *.css.map
 *.iml
+*.log
 .idea

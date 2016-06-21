@@ -78,11 +78,11 @@ router.all('*', function(req, res, next) {
 		if( method ){
 			method(req, res, next);
 		}else{
-			res.render('500', { error: arr[2] + ' is not defined' });
+			res.render('5xx', { error: arr[2] + ' is not defined' });
 		}
 		
 	} catch (err) {
-		res.render('500', { error: err });
+		res.render('5xx', { error: err });
 	}
 
 	next();
