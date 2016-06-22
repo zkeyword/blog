@@ -3,7 +3,6 @@ let path    = require('path');
 let ejs     = require('ejs');
 let express = require('express');
 let app     = express();
-let router  = require('./router');
 
 let favicon      = require('serve-favicon');
 let logger       = require('morgan');
@@ -34,16 +33,10 @@ app.use(session({
     }
 }));
 
-// log
+// accessLog
 let accessLog = fs.createWriteStream('log/access.log', {flags: 'a'});
-let errorLog = fs.createWriteStream('log/error.log', {flags: 'a'});
 app.use(logger('dev'));
 app.use(logger({stream: accessLog}));
-app.use(function (err, req, res, next) {
-  let meta = '[' + new Date() + '] ' + req.url + '\n';
-  errorLog.write(meta + err.stack + '\n');
-  next();
-});
 
 // 设定静态文件目录，比如本地文件
 app.use(express.static(path.join(__dirname, 'public')));
@@ -51,13 +44,14 @@ app.use(favicon(__dirname + '/public/favicon.ico'));
 
 
 // 路由及端口
-app.use(router);
-/* app.use(function(err, req, res, next){
+//app.use(router);
+require('./router')(app);
+app.use(function(err, req, res, next){
 	res.status(500).render('5xx');
 });
 app.use(function(req, res, next){
 	res.status(404).render('404', { url: req.originalUrl });
-}); */
+});
 app.listen(3000, function(){
 	console.log('Express started on port 3000');
 });
