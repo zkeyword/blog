@@ -4,13 +4,14 @@ let ejs     = require('ejs');
 let express = require('express');
 let app     = express();
 
+// 中间件
 let favicon      = require('serve-favicon');
 let logger       = require('morgan');
 let cookieParser = require('cookie-parser');
 let session      = require('express-session');
 let bodyParser   = require('body-parser');
 let compression  = require('compression');
-let multer       = require('multer')
+// let upload       = require('multer')({ dest: path.join(__dirname, 'public/uploads')}); https://github.com/expressjs/multer
 
 // 设定view engine变量，意为网页模板引擎
 app.set('views', path.join(__dirname, 'views'));
@@ -42,12 +43,13 @@ app.use(logger({stream: accessLog}));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(favicon(__dirname + '/public/favicon.ico'));
 
+// 数据库
 
 // 路由及端口
-//app.use(router);
-require('./router')(app);
+// app.use(router);
+app.use(require('./router'))
 app.use(function(err, req, res, next){
-	res.status(500).render('5xx');
+	res.status(500).render('5xx', {error: err});
 });
 app.use(function(req, res, next){
 	res.status(404).render('404', { url: req.originalUrl });
