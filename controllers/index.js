@@ -13,6 +13,8 @@
 	}); 
 	next();
 }; */
+let models = require('../models')
+
 exports.index = function(req, res, next){
 	console.log(req.url)
     res.render('index', {

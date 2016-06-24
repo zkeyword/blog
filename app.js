@@ -43,8 +43,6 @@ app.use(logger({stream: accessLog}));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(favicon(__dirname + '/public/favicon.ico'));
 
-// 数据库
-
 // 路由及端口
 // app.use(router);
 app.use(require('./router'))
@@ -56,4 +54,19 @@ app.use(function(req, res, next){
 });
 app.listen(3000, function(){
 	console.log('Express started on port 3000');
+});
+
+
+// 数据库
+let mongoose = require('mongoose');
+	
+mongoose.connect('mongodb://localhost/blog');
+mongoose.connection.on('connected', function () {    
+    console.log('Mongoose connection open to mongodb://localhost/blog');  
+});
+mongoose.connection.on('error',function (err) {    
+    console.log('Mongoose connection error: ' + err);  
+});
+mongoose.connection.on('disconnected', function () {    
+    console.log('Mongoose connection disconnected');  
 });
