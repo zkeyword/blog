@@ -39,6 +39,8 @@ fs.readdirSync(__dirname +'/../controllers/').forEach(function(name){
 				url = '/' + dir + '/:' + 'id/delete';
 				break;
 		}
+		
+		console.log(key)
 		let handler = obj[key];
 		router[method](url, handler);
 	}
