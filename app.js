@@ -45,16 +45,14 @@ app.use(favicon(__dirname + '/public/favicon.ico'));
 
 // 路由及端口
 // app.use(router);
-app.use(require('./router'))
+/* app.use(require('./router'))
 app.use(function(err, req, res, next){
 	res.status(500).render('5xx', {error: err});
 });
 app.use(function(req, res, next){
 	res.status(404).render('404', { url: req.originalUrl });
-});
-app.listen(3000, function(){
-	console.log('Express started on port 3000');
-});
+}); */
+
 
 
 // 数据库
@@ -69,4 +67,80 @@ mongoose.connection.on('error',function (err) {
 });
 mongoose.connection.on('disconnected', function () {    
     console.log('Mongoose connection disconnected');  
+});
+
+
+
+let co = require('co')
+
+fs.readdir(__dirname +'/controllers/', function (err, files) {
+
+	for(let i = 0, len = files.length; i<len; i++){
+		let obj = require('./controllers/' + files[i]),
+			dir = files[i].replace('\.js', '')
+
+		co(function * () {
+			
+			let router = express.Router(),
+				method = 'get',
+				url    = '',
+				handle = function(callback){
+					for (var key in obj) {
+						switch (key) {
+							case 'index':
+								method = 'get';
+								url    = '/'
+								break;
+							case 'show':
+								method = 'get';
+								url = '/' + dir + '/:' + 'id';
+								break;
+							case 'list':
+								method = 'get';
+								url = '/' + dir + 's';
+								break;
+							case 'edit':
+								method = 'get';
+								url = '/' + dir + '/:' +'id/edit';
+								break;
+							case 'update':
+								method = 'put';
+								url = '/' + dir + '/:' + 'id/update';
+								break;
+							case 'create':
+								method = 'post';
+								url = '/' + dir + '/create';
+								break;
+							case 'delete':
+								method = 'delete';
+								url = '/' + dir + '/:' + 'id/delete';
+								break;
+						}
+						
+						let handler = obj[key];
+						router[method](url, handler);
+					}
+
+					app.use(router);
+					app.use(function(err, req, res, next){
+						res.status(500).render('5xx', {error: err});
+					});
+					app.use(function(req, res, next){
+						res.status(404).render('404', { url: req.originalUrl });
+					}); 
+					callback();
+				}
+				
+			yield handle;
+			
+			return 'done';
+		}).then(function (value) {
+			app.listen(3000, function(){
+				console.log('Express started on port 3000');
+			});
+			console.log(value);
+		}, function (err) {
+			console.error(err.stack);
+		});
+	}
 });

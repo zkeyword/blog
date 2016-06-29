@@ -40,7 +40,6 @@ fs.readdirSync(__dirname +'/../controllers/').forEach(function(name){
 				break;
 		}
 		
-		console.log(key)
 		let handler = obj[key];
 		router[method](url, handler);
 	}
